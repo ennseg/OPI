@@ -1,0 +1,68 @@
+# 1. compile — компиляция
+mvn compile
+
+# 2. build — сборка в WAR+JAR
+mvn package -DskipTests
+
+# 3. clean — очистка
+mvn clean
+
+# 4. test — запуск тестов (включает build)
+mvn test
+
+# 5. xml — валидация XML
+mvn xml:validate
+
+# 6. music — сборка с музыкой
+mvn package -P music -DskipTests
+
+# 7. native2ascii — конвертация локализации
+mvn generate-resources -P native2ascii
+
+# 8. alt — альтернативная версия
+mvn package -P alt -DskipTests
+
+# 9. team — 3 ревизии из git
+mvn package -P team -DskipTests
+
+# 10. history — поиск последней рабочей ревизии
+mvn validate -P history
+
+реализовать цель lint которая через сонар куб проверяет код на соответствие код стайлу
+
+
+      <plugin>
+        <groupId>org.sonarsource.scanner.maven</groupId>
+        <artifactId>sonar-maven-plugin</artifactId>
+        <version>5.5.0.6356</version>
+      </plugin>
+
+    <profile>
+        <id>lint</id>
+        <properties>
+            <sonar.host.url>http://localhost:9000</sonar.host.url>
+            <sonar.login>sqp_a684f03ae43a30a4c3fd8beb67d6315461088e32</sonar.login>
+            <sonar.projectKey>lab3</sonar.projectKey>
+            <sonar.projectName>Lab3Dop</sonar.projectName>
+        </properties>
+        <build>
+            <defaultGoal>verify sonar:sonar</defaultGoal>
+        </build>
+    </profile>
+
+1) C:\sonarqube-26.5.0.122743\bin\windows-x86-64 - запустить сонар куб
+
+2) если не компилит то сменить версию на 17
+
+$env:JAVA_HOME = "C:\Program Files\Java\jdk-17"
+$env:Path = "$env:JAVA_HOME\bin;" + $env:Path
+
+mvn verify -Plint
+
+3) открыть локал хост 9000 выбрать анализ локально встатить текущтй ключ и выполнить:
+
+mvn clean verify sonar:sonar `
+  "-Dsonar.projectKey=lab3" `
+  "-Dsonar.projectName=lab3" `
+  "-Dsonar.host.url=http://localhost:9000" `
+  "-Dsonar.token=sqp_a684f03ae43a30a4c3fd8beb67d6315461088e32"

@@ -1,0 +1,687 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.example</groupId>
+  <artifactId>lab3</artifactId>
+  <version>1.0.0</version>
+  <packaging>war</packaging>
+  <name>Lab3 Web Application</name>
+  <description>JSF Web Application - Laboratory Work 3</description>
+
+  <properties>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <version.jakarta.faces>4.0.1</version.jakarta.faces>
+    <version.primefaces>12.0.0</version.primefaces>
+    <version.lombok>1.18.24</version.lombok>
+    <version.jakarta.servlet>6.0.0</version.jakarta.servlet>
+    <version.jakartaee.api>10.0.0</version.jakartaee.api>
+    <version.junit>5.10.1</version.junit>
+    <version.gson>2.10.1</version.gson>
+    <version.flyway>10.7.1</version.flyway>
+    <version.cdi>4.0.1</version.cdi>
+    <version.postgresql>42.7.7</version.postgresql>
+    <git.revisions.count>3</git.revisions.count>
+    <alt.class.DotBean>PointBean</alt.class.DotBean>
+    <alt.class.DotPoint>PointData</alt.class.DotPoint>
+    <alt.class.TableBean>HistoryBean</alt.class.TableBean>
+    <alt.class.ResultCheck>AreaChecker</alt.class.ResultCheck>
+    <alt.named.dotBean>pointBean</alt.named.dotBean>
+    <alt.named.tableBean>historyBean</alt.named.tableBean>
+    <alt.method.process>submit</alt.method.process>
+    <alt.method.check>validate</alt.method.check>
+    <alt.method.resultCheck>checkArea</alt.method.resultCheck>
+    <alt.method.addPoint>addEntry</alt.method.addPoint>
+    <alt.method.getEntriesJson>getEntriesJson</alt.method.getEntriesJson>
+    <alt.method.validateCoordY>validateCoordY</alt.method.validateCoordY>
+    <alt.var.x>coordX</alt.var.x>
+    <alt.var.y>coordY</alt.var.y>
+    <alt.var.r>radius</alt.var.r>
+    <alt.var.success>isInside</alt.var.success>
+    <alt.var.points>entries</alt.var.points>
+    <alt.var.flag>hitResult</alt.var.flag>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>${version.postgresql}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.glassfish</groupId>
+      <artifactId>jakarta.faces</artifactId>
+      <version>${version.jakarta.faces}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.primefaces</groupId>
+      <artifactId>primefaces</artifactId>
+      <version>${version.primefaces}</version>
+      <classifier>jakarta</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.36</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
+      <version>${version.jakarta.servlet}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>jakarta.platform</groupId>
+      <artifactId>jakarta.jakartaee-api</artifactId>
+      <version>${version.jakartaee.api}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>jakarta.enterprise</groupId>
+      <artifactId>jakarta.enterprise.cdi-api</artifactId>
+      <version>${version.cdi}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>${version.gson}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-core</artifactId>
+      <version>${version.flyway}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${version.junit}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>${version.junit}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>${version.junit}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>lab3</finalName>
+
+    <filters>
+      <filter>build.properties</filter>
+    </filters>
+
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>false</filtering>
+      </resource>
+    </resources>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.11.0</version>
+        <configuration>
+          <release>${maven.compiler.source}</release>
+          <encoding>${project.build.sourceEncoding}</encoding>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+              <version>1.18.36</version>
+            </path>
+          </annotationProcessorPaths>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.4.0</version>
+        <configuration>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
+          <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
+          <webXml>${project.basedir}/src/main/webapp/WEB-INF/web.xml</webXml>
+          <archive>
+            <manifest>
+              <mainClass>com.example.lab3.Main</mainClass>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+              <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+            </manifest>
+            <manifestEntries>
+              <Implementation-Title>${project.name}</Implementation-Title>
+              <Implementation-Version>${project.version}</Implementation-Version>
+              <Built-By>Maven</Built-By>
+            </manifestEntries>
+            <manifestFile>${project.basedir}/src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.3.0</version>
+        <configuration>
+          <archive>
+            <manifestFile>${project.basedir}/src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+            <manifest>
+              <mainClass>com.example.lab3.Main</mainClass>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+            </manifest>
+            <manifestEntries>
+              <Implementation-Version>${project.version}</Implementation-Version>
+            </manifestEntries>
+          </archive>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <classifier>executable</classifier>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>3.3.2</version>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>${project.build.directory}</directory>
+            </fileset>
+            <fileset>
+              <directory>alt-output</directory>
+            </fileset>
+            <fileset>
+              <directory>history-output</directory>
+            </fileset>
+            <fileset>
+              <directory>team-output</directory>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.2.2</version>
+        <configuration>
+          <useModulePath>false</useModulePath>
+          <includes>
+            <include>**/*Test.java</include>
+            <include>**/*Tests.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>xml-maven-plugin</artifactId>
+        <version>1.1.0</version>
+        <executions>
+          <execution>
+            <id>validate-xml</id>
+            <goals>
+              <goal>validate</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <validationSets>
+            <validationSet>
+              <dir>src/main/webapp/WEB-INF</dir>
+              <includes>
+                <include>**/*.xml</include>
+              </includes>
+            </validationSet>
+            <validationSet>
+              <dir>src/main/resources</dir>
+              <includes>
+                <include>**/*.xml</include>
+              </includes>
+            </validationSet>
+          </validationSets>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>3.1.0</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.10.14</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.3.1</version>
+        <configuration>
+          <encoding>${project.build.sourceEncoding}</encoding>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.sonarsource.scanner.maven</groupId>
+        <artifactId>sonar-maven-plugin</artifactId>
+        <version>5.5.0.6356</version>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+  <profile>
+        <id>lint</id>
+        <properties>
+            <sonar.host.url>http://localhost:9000</sonar.host.url>
+            <sonar.login>sqp_a684f03ae43a30a4c3fd8beb67d6315461088e32</sonar.login>
+            <sonar.projectKey>lab3</sonar.projectKey>
+            <sonar.projectName>Lab3Dop</sonar.projectName>
+        </properties>
+        <build>
+            <defaultGoal>verify sonar:sonar</defaultGoal>
+        </build>
+    </profile>
+
+    <profile>
+      <id>music</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>3.1.0</version>
+            <executions>
+              <execution>
+                <id>play-music</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <property file="build.properties"/>
+                    <echo message="������ ���������, ��������������� ������"/>
+                    <exec executable="bash" failonerror="false">
+                      <arg value="-c"/>
+                      <arg value="which aplay &amp;&amp; aplay ${music.file} 2>/dev/null || (which mpg123 &amp;&amp; mpg123 ${music.file} 2>/dev/null) || echo '�����-����� �� ������, ������ �������' &amp;&amp; echo -e '\a'"/>
+                    </exec>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+<profile>
+  <id>native2ascii</id>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>native2ascii-maven-plugin</artifactId>
+        <version>2.0.1</version>
+        <executions>
+          <execution>
+            <id>convert</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>resources</goal>
+            </goals>
+            <configuration>
+              <encoding>UTF-8</encoding>
+
+              <!-- ��� ���������� ��������� -->
+              <inputDirectory>${project.basedir}/src/main/resources/i18n</inputDirectory>
+              <outputDirectory>${project.build.directory}/i18n-ascii</outputDirectory>
+
+              <includes>
+                <include>**/*.properties</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+<resources>
+  <resource>
+    <directory>src/main/resources</directory>
+  </resource>
+
+  <resource>
+    <directory>${project.build.directory}/i18n-ascii</directory>
+    <targetPath>i18n</targetPath>
+  </resource>
+</resources>
+  </build>
+</profile>
+
+    <profile>
+      <id>alt</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>3.1.0</version>
+            <executions>
+              	<execution>
+  <id>alt-prepare</id>
+  <phase>generate-sources</phase>
+  <goals>
+    <goal>run</goal>
+  </goals>
+  <configuration>
+    <target>
+      <property file="build.properties"/>
+      <echo message="ALT: �������� ���������"/>
+      <mkdir dir="${project.build.directory}/alt-src"/>
+      <copy todir="${project.build.directory}/alt-src">
+        <fileset dir="${dir.src}"/>
+      </copy>
+
+      <echo message="ALT: �������������� �������"/>
+      <replaceregexp match="DotBean" replace="${alt.class.DotBean}" flags="g">
+        <fileset dir="${project.build.directory}/alt-src" includes="**/*.java"/>
+      </replaceregexp>
+      <replaceregexp match="DotPoint" replace="${alt.class.DotPoint}" flags="g">
+        <fileset dir="${project.build.directory}/alt-src" includes="**/*.java"/>
+      </replaceregexp>
+      <replaceregexp match="TableBean" replace="${alt.class.TableBean}" flags="g">
+        <fileset dir="${project.build.directory}/alt-src" includes="**/*.java"/>
+      </replaceregexp>
+      <replaceregexp match="ResultCheck" replace="${alt.class.ResultCheck}" flags="g">
+        <fileset dir="${project.build.directory}/alt-src" includes="**/*.java"/>
+      </replaceregexp>
+
+      <echo message="ALT: �������������� ������ �������"/>
+      <move file="${project.build.directory}/alt-src/com/example/Beans/DotBean.java"
+            tofile="${project.build.directory}/alt-src/com/example/Beans/${alt.class.DotBean}.java"/>
+      <move file="${project.build.directory}/alt-src/com/example/Beans/DotPoint.java"
+            tofile="${project.build.directory}/alt-src/com/example/Beans/${alt.class.DotPoint}.java"/>
+      <move file="${project.build.directory}/alt-src/com/example/Beans/TableBean.java"
+            tofile="${project.build.directory}/alt-src/com/example/Beans/${alt.class.TableBean}.java"/>
+      <move file="${project.build.directory}/alt-src/com/example/Services/ResultCheck.java"
+            tofile="${project.build.directory}/alt-src/com/example/Services/${alt.class.ResultCheck}.java"/>
+
+      <echo message="ALT: �������������� CDI-���"/>
+      <replaceregexp match="&quot;dotBean&quot;" replace="&quot;${alt.named.dotBean}&quot;" flags="g">
+        <fileset dir="${project.build.directory}/alt-src/com/example/Beans" includes="**/*.java"/>
+      </replaceregexp>
+      <replaceregexp match="&quot;tableBean&quot;" replace="&quot;${alt.named.tableBean}&quot;" flags="g">
+        <fileset dir="${project.build.directory}/alt-src/com/example/Beans" includes="**/*.java"/>
+      </replaceregexp>
+
+      <echo message="ALT: �������������� ����� ������ � Beans"/>
+      <replaceregexp match="private double x\b" replace="private double ${alt.var.x}" flags="g">
+        <fileset dir="${project.build.directory}/alt-src/com/example/Beans" includes="**/*.java"/>
+      </replaceregexp>
+      <replaceregexp match="private String y\b" replace="private String ${alt.var.y}" flags="g">
+        <fileset dir="${project.build.directory}/alt-src/com/example/Beans" includes="**/*.java"/>
+      </replaceregexp>
+      <replaceregexp match="private String r\b" replace="private String ${alt.var.r}" flags="g">
+        <fileset dir="${project.build.directory}/alt-src/com/example/Beans" includes="**/*.java"/>
+      </replaceregexp>
+      <replaceregexp match="private Boolean success\b" replace="private Boolean ${alt.var.success}" flags="g">
+        <fileset dir="${project.build.directory}/alt-src/com/example/Beans" includes="**/*.java"/>
+      </replaceregexp>
+      <replaceregexp match="private List&lt;PointData&gt; points\b" replace="private List&lt;PointData&gt; ${alt.var.points}" flags="g">
+        <fileset dir="${project.build.directory}/alt-src/com/example/Beans" includes="**/*.java"/>
+      </replaceregexp>
+      <replaceregexp match="\bpoints\b" replace="${alt.var.points}" flags="g">
+        <fileset dir="${project.build.directory}/alt-src/com/example/Beans" includes="**/*.java"/>
+      </replaceregexp>
+
+      <echo message="ALT: �������������� ������������� ����� x,y,r,success � ����� ������� PointBean"/>
+      <replaceregexp match="parseDouble\(y\)" replace="parseDouble(${alt.var.y})" flags="g">
+        <fileset dir="${project.build.directory}/alt-src/com/example/Beans" includes="${alt.class.DotBean}.java"/>
+      </replaceregexp>
+      <replaceregexp match="parseDouble\(r\)" replace="parseDouble(${alt.var.r})" flags="g">
+        <fileset dir="${project.build.directory}/alt-src/com/example/Beans" includes="${alt.class.DotBean}.java"/>
+      </replaceregexp>
+      <replaceregexp match="addData\(x," replace="addData(${alt.var.x}," flags="g">
+        <fileset dir="${project.build.directory}/alt-src/com/example/Beans" includes="${alt.class.DotBean}.java"/>
+      </replaceregexp>
+      <replaceregexp match="addData\(${alt.var.x}, yd, rd, success\)" replace="addData(${alt.var.x}, yd, rd, ${alt.var.success})" flags="g">
+        <fileset dir="${project.build.directory}/alt-src/com/example/Beans" includes="${alt.class.DotBean}.java"/>
+      </replaceregexp>
+      <replaceregexp match="new PointData\(x," replace="new PointData(${alt.var.x}," flags="g">
+        <fileset dir="${project.build.directory}/alt-src/com/example/Beans" includes="${alt.class.DotBean}.java"/>
+      </replaceregexp>
+      <replaceregexp match="new PointData\(${alt.var.x}, y," replace="new PointData(${alt.var.x}, ${alt.var.y}," flags="g">
+        <fileset dir="${project.build.directory}/alt-src/com/example/Beans" includes="${alt.class.DotBean}.java"/>
+      </replaceregexp>
+      <replaceregexp match="new PointData\(${alt.var.x}, ${alt.var.y}, r," replace="new PointData(${alt.var.x}, ${alt.var.y}, ${alt.var.r}," flags="g">
+        <fileset dir="${project.build.directory}/alt-src/com/example/Beans" includes="${alt.class.DotBean}.java"/>
+      </replaceregexp>
+      <replaceregexp match="new PointData\(${alt.var.x}, ${alt.var.y}, ${alt.var.r}, success\)" replace="new PointData(${alt.var.x}, ${alt.var.y}, ${alt.var.r}, ${alt.var.success})" flags="g">
+        <fileset dir="${project.build.directory}/alt-src/com/example/Beans" includes="${alt.class.DotBean}.java"/>
+      </replaceregexp>
+      <replaceregexp match="checkArea\(x," replace="checkArea(${alt.var.x}," flags="g">
+        <fileset dir="${project.build.directory}/alt-src/com/example/Beans" includes="${alt.class.DotBean}.java"/>
+      </replaceregexp>
+      <replaceregexp match="checkArea\(${alt.var.x}, y," replace="checkArea(${alt.var.x}, ${alt.var.y}," flags="g">
+        <fileset dir="${project.build.directory}/alt-src/com/example/Beans" includes="${alt.class.DotBean}.java"/>
+      </replaceregexp>
+      <replaceregexp match="checkArea\(${alt.var.x}, ${alt.var.y}, r\)" replace="checkArea(${alt.var.x}, ${alt.var.y}, ${alt.var.r})" flags="g">
+        <fileset dir="${project.build.directory}/alt-src/com/example/Beans" includes="${alt.class.DotBean}.java"/>
+      </replaceregexp>
+      <replaceregexp match="setSuccess\(" replace="set${alt.var.success.setter}(" flags="g">
+        <fileset dir="${project.build.directory}/alt-src/com/example/Beans" includes="${alt.class.DotBean}.java"/>
+      </replaceregexp>
+	<replaceregexp match="\bx\b" replace="${alt.var.x}" flags="g">
+  <fileset dir="${project.build.directory}/alt-src/com/example/Beans"
+           includes="${alt.class.DotBean}.java"/>
+</replaceregexp>
+<replaceregexp match="\by\b" replace="${alt.var.y}" flags="g">
+  <fileset dir="${project.build.directory}/alt-src/com/example/Beans"
+           includes="${alt.class.DotBean}.java"/>
+</replaceregexp>
+<replaceregexp match="\br\b" replace="${alt.var.r}" flags="g">
+  <fileset dir="${project.build.directory}/alt-src/com/example/Beans"
+           includes="${alt.class.DotBean}.java"/>
+</replaceregexp>
+<replaceregexp match="\bsuccess\b" replace="${alt.var.success}" flags="g">
+  <fileset dir="${project.build.directory}/alt-src/com/example/Beans"
+           includes="${alt.class.DotBean}.java"/>
+</replaceregexp>
+
+      <echo message="ALT: �������������� ���������� flag � Services"/>
+      <replaceregexp match="boolean flag\b" replace="boolean ${alt.var.flag}" flags="g">
+        <fileset dir="${project.build.directory}/alt-src/com/example/Services" includes="**/*.java"/>
+      </replaceregexp>
+      <replaceregexp match="\bflag\b" replace="${alt.var.flag}" flags="g">
+        <fileset dir="${project.build.directory}/alt-src/com/example/Services" includes="**/*.java"/>
+      </replaceregexp>
+
+      <echo message="ALT: �������������� �������"/>
+      <replaceregexp match="public void process\b" replace="public void ${alt.method.process}" flags="g">
+        <fileset dir="${project.build.directory}/alt-src/com/example/Beans" includes="**/*.java"/>
+      </replaceregexp>
+      <replaceregexp match="public void check\b" replace="public void ${alt.method.check}" flags="g">
+        <fileset dir="${project.build.directory}/alt-src/com/example/Beans" includes="**/*.java"/>
+      </replaceregexp>
+      <replaceregexp match="public static boolean resultCheck\b" replace="public static boolean ${alt.method.resultCheck}" flags="g">
+        <fileset dir="${project.build.directory}/alt-src/com/example/Services" includes="**/*.java"/>
+      </replaceregexp>
+      <replaceregexp match="public void addPoint\b" replace="public void ${alt.method.addPoint}" flags="g">
+        <fileset dir="${project.build.directory}/alt-src/com/example/Beans" includes="**/*.java"/>
+      </replaceregexp>
+      <replaceregexp match="public String getPointsJson\b" replace="public String ${alt.method.getEntriesJson}" flags="g">
+        <fileset dir="${project.build.directory}/alt-src/com/example/Beans" includes="**/*.java"/>
+      </replaceregexp>
+      <replaceregexp match="public void validateY\b" replace="public void ${alt.method.validateCoordY}" flags="g">
+        <fileset dir="${project.build.directory}/alt-src/com/example/Beans" includes="**/*.java"/>
+      </replaceregexp>
+
+      <echo message="ALT: �������������� ������� �������"/>
+      <!-- ����� check() ��� ����� ������ process() -->
+      <replaceregexp match="(?&lt;!\.)\bcheck\(\)" replace="${alt.method.check}()" flags="g">
+        <fileset dir="${project.build.directory}/alt-src/com/example/Beans" includes="${alt.class.DotBean}.java"/>
+      </replaceregexp>
+      <replaceregexp match="\.addPoint\(" replace=".${alt.method.addPoint}(" flags="g">
+        <fileset dir="${project.build.directory}/alt-src/com/example/Beans" includes="**/*.java"/>
+      </replaceregexp>
+      <replaceregexp match="\.resultCheck\(" replace=".${alt.method.resultCheck}(" flags="g">
+        <fileset dir="${project.build.directory}/alt-src/com/example/Beans" includes="**/*.java"/>
+      </replaceregexp>
+
+      <echo message="ALT: ��� ������ ���������"/>
+    </target>
+  </configuration>
+</execution>
+              <execution>
+                <id>alt-package</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <property file="build.properties"/>
+                    <echo message="ALT: ���������� �������������� ������"/>
+                    <mkdir dir="${project.build.directory}/alt-classes"/>
+                    <javac srcdir="${project.build.directory}/alt-src"
+                           destdir="${project.build.directory}/alt-classes"
+                           source="${java.source}"
+                           target="${java.target}"
+                           encoding="${project.encoding}"
+                           failonerror="false"
+                           includeantruntime="false">
+                      <classpath>
+                        <pathelement path="${project.build.directory}/classes"/>
+                        <fileset dir="${user.home}/.m2/repository" includes="**/*.jar"/>
+                      </classpath>
+                    </javac>
+                    <jar destfile="${project.build.directory}/${jar.name}-alt-${project.version}.jar"
+                         basedir="${project.build.directory}/alt-classes">
+                      <manifest>
+                        <attribute name="Main-Class" value="com.example.lab3.Main"/>
+                        <attribute name="Implementation-Version" value="${project.version}-alt"/>
+                        <attribute name="Implementation-Title" value="${project.artifactId} ALT"/>
+                      </manifest>
+                    </jar>
+                    <echo message="ALT: ������ � target/${jar.name}-alt-${project.version}.jar"/>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+  <id>team</id>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>team-build</id>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <property file="build.properties"/>
+                <echo message="TEAM: �������� ���������� ������� �� git"/>
+                <exec executable="bash" failonerror="false">
+                  <arg value="${project.basedir}/src/main/scripts/team.sh"/>
+                  <arg value="${project.build.directory}/team-output"/>
+                  <arg value="${jar.name}"/>
+                  <arg value="${war.name}"/>
+                  <arg value="${git.revisions.count}"/>
+                </exec>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</profile>
+
+<profile>
+  <id>history</id>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>history-find</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <property file="build.properties"/>
+                <echo message="HISTORY: ����� ��������� ������� �������"/>
+                <exec executable="bash" failonerror="false">
+                  <arg value="${project.basedir}/src/main/scripts/history.sh"/>
+                  <arg value="${project.build.directory}/history-output"/>
+                  <arg value="${dir.src}"/>
+                </exec>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</profile>
+  </profiles>
+
+</project>
