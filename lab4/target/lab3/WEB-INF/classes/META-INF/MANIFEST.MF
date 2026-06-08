@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Main-Class: com.example.lab3.Main
+Implementation-Title: Lab3 Web Application
+Implementation-Version: 1.0.0
+Implementation-Vendor: com.example
+Built-By: Maven
+Build-Jdk: 17
+Created-By: Apache Maven 3.x

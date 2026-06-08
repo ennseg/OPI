@@ -1,0 +1,10 @@
+<installation xmlns="urn:jboss:galleon:provisioning:3.0">
+    <feature-pack location="org.wildfly:wildfly-galleon-pack:27.0.1.Final">
+        <default-configs inherit="false"/>
+        <config name="standalone.xml" model="standalone">
+            <layers>
+                <include name="cloud-server"/>
+            </layers>
+        </config>
+    </feature-pack>
+</installation>

@@ -1,0 +1,83 @@
+services:
+  lab3-primary:
+    image: postgres:15
+    container_name: node-primary
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: lab3
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - lab3-primary-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - pg-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d lab3"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  node1:
+    image: postgres:15
+    container_name: node1
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - node1-data:/var/lib/postgresql/data
+    networks:
+      - pg-network
+
+  node2:
+    image: postgres:15
+    container_name: node2
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - node2-data:/var/lib/postgresql/data
+    networks:
+      - pg-network
+
+  node3:
+    image: postgres:15
+    container_name: node3
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - node3-data:/var/lib/postgresql/data
+    networks:
+      - pg-network
+
+  flyway:
+    image: flyway/flyway
+    container_name: flyway
+    command: -connectRetries=60 -connectRetriesInterval=5 migrate
+    volumes:
+      - ./flyway/sql:/flyway/sql
+    depends_on:
+      lab3-primary:
+        condition: service_healthy
+    environment:
+      FLYWAY_URL: jdbc:postgresql://lab3-primary:5432/lab3
+      FLYWAY_USER: admin
+      FLYWAY_PASSWORD: 1234
+    networks:
+      - pg-network
+
+networks:
+  pg-network:
+    driver: bridge
+
+volumes:
+  lab3-primary-data:
+  node1-data:
+  node2-data:
+  node3-data:

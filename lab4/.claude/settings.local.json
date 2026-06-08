@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Program Files/Java/**)",
+      "Read(//c/Program Files/**)",
+      "Read(//c//**)",
+      "PowerShell($env:PATH)",
+      "PowerShell(& \"C:\\\\Program Files\\\\Java\\\\jdk-17\\\\bin\\\\java.exe\" -version 2>&1)",
+      "PowerShell($env:NOPAUSE = \"true\"; $env:JAVA_HOME = \"C:\\\\Program Files\\\\Java\\\\jdk-17\"; & \"C:\\\\wildfly-40.0.0.Final\\\\bin\\\\add-user.bat\" -u admin -p \"Admin#1234\" -s 2>&1)",
+      "PowerShell(Test-NetConnection *)",
+      "PowerShell(Start-Process -FilePath \"C:\\\\Users\\\\22866\\\\OneDrive\\\\Desktop\\\\ITMO\\\\ОПИ\\\\lab4\\\\jconsole-wildfly.bat\" -WindowStyle Normal)",
+      "PowerShell(Start-Process -FilePath \"C:\\\\Users\\\\22866\\\\OneDrive\\\\Desktop\\\\ITMO\\\\ОПИ\\\\lab4\\\\visualvm-wildfly.bat\" -WindowStyle Normal)"
+    ]
+  }
+}

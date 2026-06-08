@@ -1,0 +1,13 @@
+com\example\DataBase\DataBaseConnection.class
+com\example\MBeans\Area.class
+com\example\Beans\TableBean.class
+com\example\Beans\DotPoint.class
+com\example\MBeans\MBeanRegistrar.class
+com\example\DataBase\DataBaseManager.class
+com\example\MBeans\AreaMBean.class
+com\example\DataBase\ConfigReader.class
+com\example\MBeans\PointStatsMBean.class
+com\example\MBeans\PointStats.class
+com\example\Beans\DotBean.class
+com\example\DataBase\Point.class
+com\example\Services\ResultCheck.class

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>MainPage</title>
+</h:head>
+<h:body>
+    <video autoplay="autoplay" loop="loop" muted="muted" class="video-background">
+        <source src="#{request.contextPath}/resources/media/video_background.mp4" type="video/mp4" />
+    </video>
+
+    <div class="main">
+        <div>
+            <p:dataTable styleClass="banner table" id="table" var="dot" value="#{tableBean.points}" widgetVar="pointsTable">
+                <p:column headerText="#{msg.table_x}">#{dot.x}</p:column>
+                <p:column headerText="#{msg.table_y}">#{dot.y}</p:column>
+                <p:column headerText="#{msg.table_r}">#{dot.r}</p:column>
+                <p:column headerText="#{msg.table_success}">#{dot.success}</p:column>
+            </p:dataTable>
+        </div>
+        <h:outputText id="pointsJsonHolder"
+                      value="#{tableBean.pointsJson}"
+                      escape="false"
+                      style="display:none"/>
+
+
+        <h:panelGroup id="coordGroup" styleClass="banner coord_sys">
+            <canvas id="coordCanvas" width="400" height="400"></canvas>
+        </h:panelGroup>
+
+        <h:form id="dataForm" prependId="false" styleClass="banner data_input">
+            <h:panelGrid columns="1" style="margin-bottom: 10px">
+                <p:outputLabel value="#{msg.label_x}" for="X" />
+                <p:inputText id="X" value="#{dotBean.x}" />
+                <p:slider for="X" minValue="-5" maxValue="5" step="0.1" />
+            </h:panelGrid>
+
+            <h:panelGrid columns="1" style="margin-bottom: 10px">
+                <p:outputLabel value="#{msg.label_y}" for="Y" />
+                <p:inputText id="Y" value="#{dotBean.y}" required="true" onkeypress="return /[0-9\.\-]/.test(event.key)" disabled="#{dotBean.y}" requiredMessage="Введите заначение Y" placeholder="Введите значение -5 &lt; Y &lt; 3" validator="#{dotBean.validateY}">
+
+                    <f:validateDoubleRange minimum="-4.999999" maximum="2.999999" />
+                </p:inputText>
+            </h:panelGrid>
+
+            <h:panelGrid columns="1" style="margin-bottom: 10px">
+                <p:outputLabel value="#{msg.label_r}" for="R" />
+                <p:selectOneRadio id="R" value="#{dotBean.r}" layout="lineDirection" widgetVar="rRadio"
+                                  onchange="document.getElementById('beanR').value=this.value;">
+                    <f:selectItem itemLabel="1" itemValue="1"/>
+                    <f:selectItem itemLabel="2" itemValue="2"/>
+                    <f:selectItem itemLabel="3" itemValue="3"/>
+                    <f:selectItem itemLabel="4" itemValue="4"/>
+                    <f:selectItem itemLabel="5" itemValue="5"/>
+                    <p:ajax event="change" oncomplete="updateCanvasFromBean();" />
+                </p:selectOneRadio>
+
+            </h:panelGrid>
+
+            <div style="margin-top: 10px;">
+                <p:commandButton id="startBtn"
+                                 value="#{msg.btn_start}"
+                                 action="#{dotBean.process}"
+                                 update="table pointsJsonHolder dataForm"
+                                 process="@form"
+                                 oncomplete="updateCanvasFromBean();"
+                                 styleClass="roll_button"
+                                 ajax="true" />
+            </div>
+            <div style="margin-top: 10px;">
+                <p:commandButton value="#{msg.btn_clear}"
+                                 action="#{tableBean.clear}"
+                                 update="table"
+                                 oncomplete="points = []; clearCanvasOnly(); drawCS();"
+                                 class="clear"
+                />
+            </div>
+
+            <p:commandButton id="hiddenSubmit"
+                             style="display:none"
+                             action="#{dotBean.process}"
+                             update="table pointsJsonHolder"
+                             process="@form"
+                             widgetVar="hiddenSubmit"
+                             ajax="true"
+                             oncomplete="updateCanvasFromBean();" />
+            <p:message for="Y" style="margin-bottom: 10px" />
+        </h:form>
+
+    </div>
+
+    <div id="response" class="response-banner"></div>
+
+    <h:form style="margin-top: 10px;">
+        <p:commandButton value="#{msg.btn_back}" action="goBack" class="back_button" />
+    </h:form>
+
+    <input type="hidden" id="beanR" value="#{dotBean.r}" />
+
+    <script>
+        function updateCanvasFromBean() {
+            const raw = document.getElementById('pointsJsonHolder').textContent;
+            points = raw ? JSON.parse(raw) : [];
+
+            beanR  = document.getElementById('beanR').value;
+
+            clearCanvasOnly();
+            drawCS();
+            drawAllPointsFromBean();
+        }
+    </script>
+
+
+
+    <h:outputScript library="js" name="coord_sys.js" />
+    <h:outputScript library="js" name="init.js" />
+    <h:outputStylesheet library="css" name="style.css" />
+
+</h:body>
+</html>

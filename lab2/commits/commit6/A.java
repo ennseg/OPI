@@ -1,0 +1,34 @@
+public class A implements D, E {
+
+    private long c = 1234;
+
+    private byte j = 1;
+
+    public java.util.Random mm() {
+        return new java.util.Random();
+    }
+
+    public int af() {
+        return -1;
+    }
+
+    public int cc() {
+        return 39;
+    }
+
+    public java.lang.Class qq() {
+        return getClass();
+    }
+
+    public long dd() {
+        return 33;
+    }
+
+    public int hh() {
+        return new java.util.Random(10).nextInt(10);
+    }
+
+    public Object pp() {
+        return this;
+    }
+}

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Welcome</title>
+</h:head>
+<h:body>
+    <video autoplay="autoplay" loop="loop" muted="muted" class="video-background">
+        <source src="#{request.contextPath}/resources/media/video_background.mp4" type="video/mp4" />
+    </video>
+    <div class="main">
+        <header class="banner">
+            #{msg.author_info}
+        </header>
+        <time>
+            <canvas id="clock">
+            </canvas>
+            <span id="time"></span>
+            <span id="date"></span>
+        </time>
+        <h:form>
+            <p:commandButton class="go_to_main" value="#{msg.btn_go_to_main}" action="toIndex" />
+        </h:form>
+    </div>
+    <h:outputScript name="clock.js" library="js" />
+    <h:outputStylesheet library="css" name="style.css" />
+</h:body>
+</html>
+
+
+
